@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <!-- Nur Moodle darf kontaktiert werden; Skripte nur aus dem eigenen Repo -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' blob: data:; connect-src https://edufs.edu.htl-leonding.ac.at; base-uri 'none'; form-action 'none'">
+  <meta name="theme-color" content="#1f5fbf">
+  <title>Hausaufgabe abgeben</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="bar">
+    <h1 id="title">Hausaufgabe abgeben</h1>
+    <div id="menu" class="menu" hidden>
+      <button type="button" id="btn-change-course" class="link">Kurs wechseln</button>
+      <button type="button" id="btn-logout" class="link">Abmelden</button>
+    </div>
+  </header>
+
+  <main>
+    <div id="error" class="banner error" role="alert" hidden></div>
+
+    <!-- Anmeldung -->
+    <section id="screen-login" hidden>
+      <form id="login-form" autocomplete="on">
+        <label>Benutzername
+          <input id="username" name="username" type="text" autocomplete="username" autocapitalize="none" autocorrect="off" required>
+        </label>
+        <label>Passwort
+          <input id="password" name="password" type="password" autocomplete="current-password" required>
+        </label>
+        <button type="submit" class="primary">Anmelden</button>
+      </form>
+      <p class="note">
+        Dein Passwort wird nur direkt an Moodle gesendet und nirgends gespeichert.
+        Gespeichert wird nur ein Anmelde-Token in diesem Browser.
+        Der Quellcode ist offen:
+        <a href="https://github.com/jjk1q/moodle-abgabe" target="_blank" rel="noopener">github.com/jjk1q/moodle-abgabe</a>
+      </p>
+    </section>
+
+    <!-- Kurs wählen -->
+    <section id="screen-courses" hidden>
+      <h2>Mathe-Kurs wählen</h2>
+      <ul id="course-list" class="list"></ul>
+    </section>
+
+    <!-- Aufgaben -->
+    <section id="screen-assignments" hidden>
+      <h2 id="course-name">Aufgaben</h2>
+      <div class="chips" role="group" aria-label="Filter">
+        <button type="button" class="chip" data-filter="all" aria-pressed="true">Alle <span id="count-all"></span></button>
+        <button type="button" class="chip" data-filter="open" aria-pressed="false">Offen <span id="count-open"></span></button>
+        <button type="button" class="chip" data-filter="late" aria-pressed="false">Überfällig <span id="count-late"></span></button>
+      </div>
+      <ul id="assignment-list" class="list"></ul>
+      <p id="assignments-empty" class="note" hidden>Keine offenen Aufgaben mit Dateiabgabe.</p>
+      <button type="button" id="btn-reload" class="secondary">Aktualisieren</button>
+    </section>
+
+    <!-- Abgabe -->
+    <section id="screen-submit" hidden>
+      <button type="button" id="btn-back" class="link">&larr; Zurück</button>
+      <h2 id="assignment-title"></h2>
+      <p id="assignment-due" class="note"></p>
+      <p id="assignment-limits" class="note"></p>
+
+      <div class="row">
+        <label class="btn secondary">Foto aufnehmen
+          <input id="input-camera" type="file" accept="image/*" capture="environment" hidden>
+        </label>
+        <label class="btn secondary">Aus Galerie
+          <input id="input-gallery" type="file" accept="image/*" multiple hidden>
+        </label>
+      </div>
+
+      <ol id="photo-list" class="photos"></ol>
+      <p id="photo-empty" class="note">Noch keine Fotos. Jedes Foto wird eine eigene A4-Seite.</p>
+
+      <button type="button" id="btn-submit" class="primary" disabled>Abgeben</button>
+      <p id="progress" class="note" hidden></p>
+    </section>
+
+    <!-- Ergebnis -->
+    <section id="screen-done" hidden>
+      <div class="banner ok">Erfolgreich abgegeben</div>
+      <p id="done-name"></p>
+      <button type="button" id="btn-done" class="primary">Zu den Aufgaben</button>
+    </section>
+  </main>
+
+  <dialog id="confirm">
+    <form method="dialog">
+      <p>Wirklich abgeben?</p>
+      <p><strong id="confirm-name"></strong></p>
+      <p id="confirm-pages" class="note"></p>
+      <div class="row">
+        <button value="cancel" class="secondary">Abbrechen</button>
+        <button value="ok" class="primary">Abgeben</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="busy" class="busy" hidden><div class="spinner"></div></div>
+
+  <script src="lib/pdf-lib.min.js"></script>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
